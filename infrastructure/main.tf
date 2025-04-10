@@ -30,4 +30,5 @@ module "ecs" {
   enable_service_discovery = true
   service_discovery_name = "fe"
   service_discovery_namespace_id = 1
+  env_variables = var.env_variables
 }

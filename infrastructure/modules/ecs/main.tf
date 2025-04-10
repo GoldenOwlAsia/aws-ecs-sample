@@ -15,6 +15,7 @@ module "cluster" {
 module "task_definition" {
   source = "./task_definition"
   container_port = var.container_port
+  env_variables = var.env_variables
   cpu = var.cpu
   ecs_role_name = var.ecs_role_name
   image_url = var.image_url
