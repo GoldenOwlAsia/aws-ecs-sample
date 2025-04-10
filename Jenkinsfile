@@ -47,12 +47,15 @@ pipeline {
         }
         
         stage('Build Docker Image') {
+            // when {
+            //     branch 'main'
+            // }
             steps {
                 echo "Building Docker image: ${DOCKER_IMAGE}"
                 withCredentials([file(credentialsId: 'HCMUS_SEMINAR_ENV_FILE', variable: 'ENV_FILE')]) {
                     sh """
                         cd source_code
-                        cp ${ENV_FILE} .env
+                        cat ${ENV_FILE} > .env
                         docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest -f ${env.DOCKERFILE} .
                         rm -f .env
                     """
@@ -69,17 +72,24 @@ pipeline {
         }
         
         stage('Push to ECR') {
+            // when {
+            //     branch 'main'
+            // }
             steps {
                 echo "Pushing Docker image to ECR..."
                 sh '''
                     aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
-                    docker push ${DOCKER_IMAGE}
+                    docker push ${DOCKER_IMAGE}:${IMAGE_TAG}
+                    docker push ${DOCKER_IMAGE}:latest
                 '''
                 echo "Image pushed to ECR successfully"
             }
         }
         
         stage('Deploy to ECS') {
+            // when {
+            //     branch 'main'
+            // }
             steps {
                 echo "Deploying to ECS cluster: ${ECS_CLUSTER}, service: ${ECS_SERVICE}"
                 sh '''

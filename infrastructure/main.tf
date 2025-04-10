@@ -7,11 +7,11 @@ module "vpc" {
   app_elb_subnets = var.app_elb_subnets
 }
 
-module "ecr" {
-  source = "./modules/ecr"
-  repository_name = "hcmus-seminar"
-  max_image_count = 5
-}
+# module "ecr" {
+#   source = "./modules/ecr"
+#   repository_name = "hcmus-seminar"
+#   max_image_count = 5
+# }
 
 module "ecs" {
   source = "./modules/ecs"
@@ -30,4 +30,5 @@ module "ecs" {
   enable_service_discovery = true
   service_discovery_name = "fe"
   service_discovery_namespace_id = 1
+  env_variables = var.env_variables
 }

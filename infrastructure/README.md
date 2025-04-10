@@ -72,5 +72,97 @@ Infrastructure as Code (IaC) is a cornerstone of DevOps for several reasons:
 
 By implementing IaC with Terraform in this project, we demonstrate how modern DevOps teams manage cloud infrastructure with the same rigor and practices traditionally applied to application code.
 
+# 🛠 How to Run This (Infrastructure)
 
+This guide walks you through deploying infrastructure for the **HCMUS DevOps Seminar** demo project using **Terraform** and **AWS**.
 
+---
+
+## ✅ 1. Create a New AWS Credential
+
+You need an AWS access key to deploy infrastructure. Here's how to create one:
+
+1. Go to the AWS Console → **IAM** → **Users** → your user → **Security credentials**
+2. Create a new **Access Key**
+3. Configure it on your local machine:
+
+```bash
+aws configure --profile hcmus_seminar
+```
+
+Replace hcmus_seminar with any profile name you like. You’ll be prompted to enter your Access Key ID, Secret Access Key, default region, and output format.
+
+## 📄 2. Create a dev.tfvars File
+In the infrastructure/ folder, create a file named dev.tfvars with the following content:
+
+```hcl
+aws_profile = "hcmus_seminar"
+vpc_name = "hcmus-seminar"
+container_port = 3000
+vpc_cidr_block = "10.0.0.0/16"
+region = "ap-southeast-1"
+
+app_service_subnets = [
+  {
+    cidr_block        = "10.0.1.0/24"
+    availability_zone = "ap-southeast-1a"
+  },
+  {
+    cidr_block        = "10.0.2.0/24"
+    availability_zone = "ap-southeast-1b"
+  }
+]
+
+app_elb_subnets = [
+  {
+    cidr_block        = "10.0.3.0/24"
+    availability_zone = "ap-southeast-1a"
+  },
+  {
+    cidr_block        = "10.0.4.0/24"
+    availability_zone = "ap-southeast-1b"
+  }
+]
+
+service_name = "hcmus-seminar"
+image_url = image_url"
+
+env_variables = [
+  {
+    name  = "DATABASE_URL"
+    value = ""
+  }
+]
+
+memory = "512"
+cpu = "256"
+enable_load_balancer = true
+enable_service_discovery = false
+desired_count = 1
+launch_type = "FARGATE"
+platform_version = "1.4.0"
+ecs_role_name = "ecsTaskExecutionRole"
+min_capacity = 1
+max_capacity = 1
+memory_limit_scaling = 70
+cpu_limit_scaling = 70
+service_discovery_dns = "hcmus-seminar.local"
+```
+
+🛡️ Note: The values above use mock data or public-safe values. Be cautious not to commit sensitive information like secrets or credentials.
+
+## 🚀 3. Deploy with Terraform
+Run the following commands from the infrastructure/ directory:
+
+```bash
+terraform init
+terraform plan -var-file="dev.tfvars"
+terraform apply -var-file="dev.tfvars"
+```
+
+📌 Notes
+- You must have Terraform installed: https://www.terraform.io/downloads
+
+- Make sure your AWS profile is configured correctly before running the commands
+
+- Infrastructure created includes: VPC, ECS Cluster & Service, Load Balancer, IAM roles, and networking
