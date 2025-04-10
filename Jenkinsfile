@@ -47,6 +47,9 @@ pipeline {
         }
         
         stage('Build Docker Image') {
+            // when {
+            //     branch 'main'
+            // }
             steps {
                 echo "Building Docker image: ${DOCKER_IMAGE}"
                 withCredentials([file(credentialsId: 'HCMUS_SEMINAR_ENV_FILE', variable: 'ENV_FILE')]) {
@@ -69,6 +72,9 @@ pipeline {
         }
         
         stage('Push to ECR') {
+            // when {
+            //     branch 'main'
+            // }
             steps {
                 echo "Pushing Docker image to ECR..."
                 sh '''
@@ -79,17 +85,20 @@ pipeline {
             }
         }
         
-        stage('Deploy to ECS') {
-            steps {
-                echo "Deploying to ECS cluster: ${ECS_CLUSTER}, service: ${ECS_SERVICE}"
-                sh '''
-                    aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment
-                    echo "Waiting for service to stabilize..."
-                    aws ecs wait services-stable --cluster ${ECS_CLUSTER} --services ${ECS_SERVICE}
-                '''
-                echo "Deployment to ECS completed successfully"
-            }
-        }
+        // stage('Deploy to ECS') {
+        //     // when {
+        //     //     branch 'main'
+        //     // }
+        //     steps {
+        //         echo "Deploying to ECS cluster: ${ECS_CLUSTER}, service: ${ECS_SERVICE}"
+        //         sh '''
+        //             aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment
+        //             echo "Waiting for service to stabilize..."
+        //             aws ecs wait services-stable --cluster ${ECS_CLUSTER} --services ${ECS_SERVICE}
+        //         '''
+        //         echo "Deployment to ECS completed successfully"
+        //     }
+        // }
         
         stage('Integration Tests') {
             steps {
