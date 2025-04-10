@@ -47,9 +47,9 @@ pipeline {
         }
         
         stage('Build Docker Image') {
-            when {
-                branch 'main'
-            }
+            // when {
+            //     branch 'main'
+            // }
             steps {
                 echo "Building Docker image: ${DOCKER_IMAGE}"
                 withCredentials([file(credentialsId: 'HCMUS_SEMINAR_ENV_FILE', variable: 'ENV_FILE')]) {
@@ -72,9 +72,9 @@ pipeline {
         }
         
         stage('Push to ECR') {
-            when {
-                branch 'main'
-            }
+            // when {
+            //     branch 'main'
+            // }
             steps {
                 echo "Pushing Docker image to ECR..."
                 sh '''
