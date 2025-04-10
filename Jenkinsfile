@@ -11,6 +11,7 @@ pipeline {
         DOCKER_IMAGE = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
         ECS_CLUSTER = credentials('HCMUS_SEMINAR_ECS_CLUSTER')
         ECS_SERVICE = credentials('HCMUS_SEMINAR_ECS_SERVICE')
+    }
     
     stages {
         stage('Code Checkout') {
