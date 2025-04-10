@@ -86,20 +86,20 @@ pipeline {
             }
         }
         
-        // stage('Deploy to ECS') {
-        //     // when {
-        //     //     branch 'main'
-        //     // }
-        //     steps {
-        //         echo "Deploying to ECS cluster: ${ECS_CLUSTER}, service: ${ECS_SERVICE}"
-        //         sh '''
-        //             aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment
-        //             echo "Waiting for service to stabilize..."
-        //             aws ecs wait services-stable --cluster ${ECS_CLUSTER} --services ${ECS_SERVICE}
-        //         '''
-        //         echo "Deployment to ECS completed successfully"
-        //     }
-        // }
+        stage('Deploy to ECS') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo "Deploying to ECS cluster: ${ECS_CLUSTER}, service: ${ECS_SERVICE}"
+                sh '''
+                    aws ecs update-service --cluster ${ECS_CLUSTER} --service ${ECS_SERVICE} --force-new-deployment
+                    echo "Waiting for service to stabilize..."
+                    aws ecs wait services-stable --cluster ${ECS_CLUSTER} --services ${ECS_SERVICE}
+                '''
+                echo "Deployment to ECS completed successfully"
+            }
+        }
         
         stage('Integration Tests') {
             steps {
