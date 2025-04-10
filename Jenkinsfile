@@ -52,7 +52,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'HCMUS_SEMINAR_ENV_FILE', variable: 'ENV_FILE')]) {
                     sh """
                         cd source_code
-                        cp ${ENV_FILE} .env
+                        cat ${ENV_FILE} > .env
                         docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest -f ${env.DOCKERFILE} .
                         rm -f .env
                     """
