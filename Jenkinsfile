@@ -9,6 +9,7 @@ pipeline {
         ECR_REPOSITORY = credentials('HCMUS_SEMINAR_ECR_REPOSITORY')
         IMAGE_TAG = "${env.BUILD_NUMBER}"
         DOCKER_IMAGE = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
+        DOCKERFILE = 'Dockerfile'
         ECS_CLUSTER = credentials('HCMUS_SEMINAR_ECS_CLUSTER')
         ECS_SERVICE = credentials('HCMUS_SEMINAR_ECS_SERVICE')
     }
@@ -50,13 +51,9 @@ pipeline {
                 echo "Building Docker image: ${DOCKER_IMAGE}"
                 withCredentials([file(credentialsId: 'HCMUS_SEMINAR_ENV_FILE', variable: 'ENV_FILE')]) {
                     sh '''
-                        # Copy the secret env file to .env for the build
+                        cd source_code
                         cp $ENV_FILE .env
-                        
-                        # Build Docker image with the .env file
-                        docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest .
-                        
-                        # Clean up the .env file for security
+                        docker build -t ${DOCKER_IMAGE}:${IMAGE_TAG} -t ${DOCKER_IMAGE}:latest -f ${env.DOCKERFILE} .
                         rm -f .env
                     '''
                 }
