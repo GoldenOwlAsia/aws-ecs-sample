@@ -5,6 +5,12 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
+# Install required system dependencies
+RUN apt-get update && apt-get install -y \
+  openssl \
+  ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN npm install
 
 COPY . .
