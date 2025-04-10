@@ -87,9 +87,9 @@ pipeline {
         }
         
         stage('Deploy to ECS') {
-            when {
-                branch 'main'
-            }
+            // when {
+            //     branch 'main'
+            // }
             steps {
                 echo "Deploying to ECS cluster: ${ECS_CLUSTER}, service: ${ECS_SERVICE}"
                 sh '''
